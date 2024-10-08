@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pr5/Pages/component/Items.dart';
-import 'package:pr5/model/items.dart';
+import 'package:pr6/Pages/component/Items.dart';
+import 'package:pr6/model/items.dart';
 
 class ItemPage extends StatefulWidget {
   const ItemPage({super.key, required this.item});

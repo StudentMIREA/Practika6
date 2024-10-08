@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pr5/Pages/ItemPage.dart';
-import 'package:pr5/Pages/component/Items.dart';
-import 'package:pr5/model/items.dart';
+import 'package:pr6/Pages/ItemPage.dart';
+import 'package:pr6/Pages/component/Items.dart';
+import 'package:pr6/model/items.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});

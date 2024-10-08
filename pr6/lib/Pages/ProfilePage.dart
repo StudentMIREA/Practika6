@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pr5/Pages/EditPage.dart';
-import 'package:pr5/Pages/component/Person.dart';
-import 'package:pr5/model/person.dart';
+import 'package:pr6/Pages/EditPage.dart';
+import 'package:pr6/Pages/component/Person.dart';
+import 'package:pr6/model/person.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});

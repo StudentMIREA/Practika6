@@ -1,4 +1,4 @@
-import 'package:pr5/model/items.dart';
+import 'package:pr6/model/items.dart';
 
 final List<Items> ItemsList = <Items>[
   Items(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pr5/Pages/ItemPage.dart';
-import 'package:pr5/Pages/component/Items.dart';
+import 'package:pr6/Pages/AddPage.dart';
+import 'package:pr6/Pages/ItemPage.dart';
+import 'package:pr6/Pages/component/Items.dart';
+import 'package:pr6/model/items.dart';
 
 class ItemsPage extends StatefulWidget {
   const ItemsPage({super.key});
@@ -15,6 +17,19 @@ class _ItemsPageState extends State<ItemsPage> {
       ItemsList.elementAt(index).favorite
           ? ItemsList.elementAt(index).favorite = false
           : ItemsList.elementAt(index).favorite = true;
+    });
+  }
+
+  void NavToAdd(BuildContext context) async {
+    Items item = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => AddPage(
+                items: ItemsList,
+              )),
+    );
+    setState(() {
+      ItemsList.add(item);
     });
   }
 
@@ -37,6 +52,18 @@ class _ItemsPageState extends State<ItemsPage> {
       appBar: AppBar(
         title: const Text('Товары'),
         backgroundColor: Colors.white70,
+        actions: [
+          IconButton(
+            icon: const Padding(
+              padding: EdgeInsets.only(right: 10.0),
+              child: Icon(
+                Icons.add,
+                size: 30,
+              ),
+            ),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: ItemsList.length != 0
           ? GridView.builder(

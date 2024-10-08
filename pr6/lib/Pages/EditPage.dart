@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pr5/Pages/component/Person.dart';
-import 'package:pr5/model/person.dart';
+import 'package:pr6/Pages/component/Person.dart';
+import 'package:pr6/model/person.dart';
 
 class EditPage extends StatefulWidget {
   const EditPage({super.key});

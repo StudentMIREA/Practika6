@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pr5/Pages/FavouritePage.dart';
-import 'package:pr5/Pages/ItemsPage.dart';
-import 'package:pr5/Pages/ProfilePage.dart';
+import 'package:pr6/Pages/FavouritePage.dart';
+import 'package:pr6/Pages/ItemsPage.dart';
+import 'package:pr6/Pages/ProfilePage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,6 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static const List<Widget> widgetOptions = <Widget>[
     ItemsPage(),
     FavoritePage(),
+    FavoritePage(),
     ProfilePage()
   ];
 
@@ -56,6 +57,8 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Главная'),
           BottomNavigationBarItem(
               icon: Icon(Icons.favorite), label: 'Избранное'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart_outlined), label: 'Корзина'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Профиль')
         ],
         currentIndex: selectedIndex,

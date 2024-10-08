@@ -1,4 +1,4 @@
-import 'package:pr5/model/person.dart';
+import 'package:pr6/model/person.dart';
 
 List<Person> PersonList = <Person>[
   Person(
