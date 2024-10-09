@@ -26,21 +26,22 @@ class _FavoritePageState extends State<FavoritePage> {
       } else {
         Favorite.remove(index);
       }
-      List<Items> ItemsFavList = ItemsList.where(
+      ItemsFavList = ItemsList.where(
           (item) => Favorite.any((element) => element == item.id)).toList();
     });
   }
 
   void NavToItem(index) async {
-    int answ = await Navigator.push(
+    int? answ = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            ItemPage(item: ItemsList.elementAt(findIndexById(index))),
+        builder: (context) => ItemPage(item: ItemsList.elementAt(index)),
       ),
     );
     setState(() {
-      ItemsList.removeAt(answ);
+      if (answ != null) {
+        ItemsList.removeAt(answ);
+      }
     });
   }
 

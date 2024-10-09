@@ -46,14 +46,16 @@ class _ItemsPageState extends State<ItemsPage> {
   }
 
   void NavToItem(index) async {
-    int answ = await Navigator.push(
+    int? answ = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ItemPage(item: ItemsList.elementAt(index)),
       ),
     );
     setState(() {
-      ItemsList.removeAt(answ);
+      if (answ != null) {
+        ItemsList.removeAt(answ);
+      }
     });
   }
 
