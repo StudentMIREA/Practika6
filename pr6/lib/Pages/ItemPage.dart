@@ -43,13 +43,23 @@ class _ItemPageState extends State<ItemPage> {
         title: Container(
           width: MediaQuery.of(context).size.width * 0.9,
           child: const Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.only(right: 8.0, left: 8.0, top: 8.0),
             child: Center(
               child: Text(
-                'Удалить товар?',
+                'Удалить карточку товара?',
                 style: TextStyle(fontSize: 16.00, color: Colors.black),
               ),
             ),
+          ),
+        ),
+        content: const Padding(
+          padding: EdgeInsets.only(right: 8.0, left: 8.0),
+          child: Text(
+            'После удаления востановить товар будет невозможно',
+            style: TextStyle(fontSize: 14.00, color: Colors.black),
+            softWrap: true,
+            textAlign: TextAlign.justify,
+            textDirection: TextDirection.ltr,
           ),
         ),
         actions: [
@@ -99,7 +109,10 @@ class _ItemPageState extends State<ItemPage> {
     return Scaffold(
       backgroundColor: Colors.amber[200],
       appBar: AppBar(
-        title: Text(widget.item.name),
+        title: Text(
+          widget.item.name,
+          style: TextStyle(fontSize: 16.0),
+        ),
         backgroundColor: const Color.fromARGB(255, 255, 246, 218),
       ),
       body: SingleChildScrollView(
@@ -159,7 +172,7 @@ class _ItemPageState extends State<ItemPage> {
                         ),
                         Padding(
                           padding:
-                              const EdgeInsets.only(left: 50.0, right: 50.0),
+                              const EdgeInsets.only(left: 50.0, right: 40.0),
                           child: Row(children: [
                             const Text(
                               'Цена: ',
@@ -173,29 +186,26 @@ class _ItemPageState extends State<ItemPage> {
                                   fontWeight: FontWeight.bold),
                             ),
                             Expanded(
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: IconButton(
-                                    onPressed: () =>
-                                        {AddShopCart(widget.item.id)},
-                                    icon: !ShoppingCart.any(
-                                            (el) => el == widget.item.id)
-                                        ? const Icon(
-                                            Icons.shopping_cart_outlined)
-                                        : const Icon(
-                                            Icons.shopping_cart_rounded)),
-                              ),
-                            ),
-                            Expanded(
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: IconButton(
-                                    onPressed: () =>
-                                        {AddFavorite(widget.item.id)},
-                                    icon: Favorite.any(
-                                            (el) => el == widget.item.id)
-                                        ? const Icon(Icons.favorite)
-                                        : const Icon(Icons.favorite_border)),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                      onPressed: () =>
+                                          {AddShopCart(widget.item.id)},
+                                      icon: !ShoppingCart.any(
+                                              (el) => el == widget.item.id)
+                                          ? const Icon(
+                                              Icons.shopping_cart_outlined)
+                                          : const Icon(
+                                              Icons.shopping_cart_rounded)),
+                                  IconButton(
+                                      onPressed: () =>
+                                          {AddFavorite(widget.item.id)},
+                                      icon: Favorite.any(
+                                              (el) => el == widget.item.id)
+                                          ? const Icon(Icons.favorite)
+                                          : const Icon(Icons.favorite_border)),
+                                ],
                               ),
                             ),
                           ]),
