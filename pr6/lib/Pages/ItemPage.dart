@@ -17,9 +17,80 @@ class _ItemPageState extends State<ItemPage> {
 
   void AddFavorite(int index) {
     setState(() {
-      ItemsList.elementAt(findIndexById(index)).favorite
-          ? ItemsList.elementAt(findIndexById(index)).favorite = false
-          : ItemsList.elementAt(findIndexById(index)).favorite = true;
+      if (!Favorite.any((el) => el == index)) {
+        Favorite.add(index);
+      } else {
+        Favorite.remove(index);
+      }
+    });
+  }
+
+  void AddShopCart(index) async {
+    setState(() {
+      if (!ShoppingCart.any((el) => el == index)) {
+        ShoppingCart.add(index);
+      } else {
+        ShoppingCart.remove(index);
+      }
+    });
+  }
+
+  void remItem(int i, BuildContext context) {
+    showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        backgroundColor: const Color.fromARGB(255, 255, 246, 218),
+        title: Container(
+          width: MediaQuery.of(context).size.width * 0.9,
+          child: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Center(
+              child: Text(
+                'Удалить товар?',
+                style: TextStyle(fontSize: 16.00, color: Colors.black),
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.amber[700]),
+            child: const Text('Ок',
+                style: TextStyle(color: Colors.black, fontSize: 14.0)),
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
+          ),
+          TextButton(
+            child: const Text('Отмена',
+                style: TextStyle(color: Colors.black, fontSize: 14.0)),
+            onPressed: () {
+              Navigator.pop(context, false);
+            },
+          ),
+        ],
+      ),
+    ).then((bool? isDeleted) {
+      if (isDeleted != null && isDeleted) {
+        setState(() {
+          if (ShoppingCart.any((el) => el == i)) {
+            ShoppingCart.remove(i);
+          }
+          if (Favorite.any((el) => el == i)) {
+            Favorite.remove(i);
+          }
+          Navigator.pop(context, findIndexById(i));
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Товар успешно удален',
+              style: TextStyle(color: Colors.black, fontSize: 16.0),
+            ),
+            backgroundColor: Colors.amber[700],
+          ),
+        );
+      }
     });
   }
 
@@ -30,164 +101,162 @@ class _ItemPageState extends State<ItemPage> {
       appBar: AppBar(
         title: Text(widget.item.name),
         backgroundColor: const Color.fromARGB(255, 255, 246, 218),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context, widget.item.favorite);
-          },
-        ),
       ),
-      body: Container(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 15.0, right: 15.0, top: 15.0, bottom: 15.0),
-              child: Container(
+      body: SingleChildScrollView(
+        child: Container(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 15.0, right: 15.0, top: 15.0, bottom: 15.0),
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 255, 246, 218),
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 25.0,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.grey, width: 2),
+                              ),
+                              child: Image.network(
+                                widget.item.image,
+                                width: MediaQuery.of(context).size.width * 0.65,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.65,
+                                fit: BoxFit.cover,
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
+                                  if (loadingProgress == null) return child;
+                                  return const CircularProgressIndicator();
+                                },
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.65,
+                                    height: MediaQuery.of(context).size.width *
+                                        0.65,
+                                    color: Colors.amber[200],
+                                    child: const Center(
+                                        child: Text(
+                                      'нет картинки',
+                                      softWrap: true,
+                                      textAlign: TextAlign.center,
+                                    )),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 50.0, right: 50.0),
+                          child: Row(children: [
+                            const Text(
+                              'Цена: ',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            Text(
+                              '${widget.item.cost} ₽',
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Color.fromARGB(255, 6, 196, 9),
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: IconButton(
+                                    onPressed: () =>
+                                        {AddShopCart(widget.item.id)},
+                                    icon: !ShoppingCart.any(
+                                            (el) => el == widget.item.id)
+                                        ? const Icon(
+                                            Icons.shopping_cart_outlined)
+                                        : const Icon(
+                                            Icons.shopping_cart_rounded)),
+                              ),
+                            ),
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: IconButton(
+                                    onPressed: () =>
+                                        {AddFavorite(widget.item.id)},
+                                    icon: Favorite.any(
+                                            (el) => el == widget.item.id)
+                                        ? const Icon(Icons.favorite)
+                                        : const Icon(Icons.favorite_border)),
+                              ),
+                            ),
+                          ]),
+                        ),
+                        const SizedBox(
+                          height: 25.0,
+                        ),
+                      ],
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 15.0, right: 15.0, top: 0.0, bottom: 10.0),
+                child: Container(
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 255, 246, 218),
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                   child: Column(
                     children: [
-                      const SizedBox(
-                        height: 25.0,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey, width: 2),
-                            ),
-                            child: Image.network(
-                              widget.item.image,
-                              width: MediaQuery.of(context).size.width * 0.65,
-                              height: MediaQuery.of(context).size.width * 0.65,
-                              fit: BoxFit.cover,
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return const CircularProgressIndicator();
-                              },
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.65,
-                                  height:
-                                      MediaQuery.of(context).size.width * 0.65,
-                                  color: Colors.amber[200],
-                                  child: const Center(
-                                      child: Text(
-                                    'нет картинки',
-                                    softWrap: true,
-                                    textAlign: TextAlign.center,
-                                  )),
-                                );
-                              },
-                            ),
-                          ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 30.0, bottom: 15.0),
+                        child: Text(
+                          'О товаре',
+                          style: TextStyle(fontSize: 16),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 50.0),
-                        child: Row(children: [
-                          const Text(
-                            'Цена: ',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          Text(
-                            '${widget.item.cost} ₽',
-                            style: const TextStyle(
-                                fontSize: 16,
-                                color: Color.fromARGB(255, 6, 196, 9),
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ]),
-                      ),
-                      const SizedBox(
-                        height: 25.0,
+                        padding: const EdgeInsets.only(
+                            top: 15.0, bottom: 30.0, left: 30.0, right: 30.0),
+                        child: Text(
+                          widget.item.describtion,
+                          style: const TextStyle(fontSize: 14),
+                          softWrap: true,
+                          textAlign: TextAlign.justify,
+                          textDirection: TextDirection.ltr,
+                        ),
                       ),
                     ],
-                  )),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 15.0, right: 15.0, top: 0.0, bottom: 10.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 255, 246, 218),
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: Column(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(top: 30.0, bottom: 15.0),
-                      child: Text(
-                        'О товаре',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 15.0, bottom: 30.0, left: 30.0, right: 30.0),
-                      child: Text(
-                        widget.item.describtion,
-                        style: const TextStyle(fontSize: 14),
-                        softWrap: true,
-                        textAlign: TextAlign.justify,
-                        textDirection: TextDirection.ltr,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-            widget.item.favorite
-                ? Expanded(
-                    child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 30.0),
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.grey, width: 2),
-                        ),
-                        child: const Text(
-                          'Удалить из избранного',
-                          style: TextStyle(fontSize: 15.0, color: Colors.grey),
-                        ),
-                        onPressed: () {
-                          AddFavorite(widget.item.id);
-                        },
-                      ),
-                    ),
-                  ))
-                : Expanded(
-                    child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 30.0),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: const Color.fromARGB(255, 0, 0, 0),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              side: const BorderSide(
-                                  width: 2,
-                                  color: Color.fromRGBO(255, 160, 0, 1))),
-                          backgroundColor:
-                              const Color.fromARGB(255, 255, 246, 218),
-                        ),
-                        child: const Text("Добавить в избранное",
-                            style: TextStyle(fontSize: 15)),
-                        onPressed: () {
-                          AddFavorite(widget.item.id);
-                        },
-                      ),
-                    ),
-                  ))
-          ],
+              Padding(
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height * 0.4,
+                    bottom: 15.0),
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.grey, width: 2),
+                  ),
+                  child: const Text(
+                    'Удалить карточку товара',
+                    style: TextStyle(fontSize: 12.0, color: Colors.grey),
+                  ),
+                  onPressed: () {
+                    remItem(widget.item.id, context);
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

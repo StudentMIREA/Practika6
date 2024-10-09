@@ -77,7 +77,7 @@ class _ShopCartPageState extends State<ShopCartPage> {
 
   // Переход на страницу с товарами
   void NavToItem(index) async {
-    bool answ = await Navigator.push(
+    int answ = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) =>
@@ -85,9 +85,7 @@ class _ShopCartPageState extends State<ShopCartPage> {
       ),
     );
     setState(() {
-      ItemsList.elementAt(findIndexById(index)).favorite = answ;
-      ItemsFromCart = ItemsList.where(
-          (item) => ShoppingCart.any((element) => element == item.id)).toList();
+      ItemsList.removeAt(answ);
     });
   }
 

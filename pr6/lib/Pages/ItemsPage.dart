@@ -14,9 +14,21 @@ class ItemsPage extends StatefulWidget {
 class _ItemsPageState extends State<ItemsPage> {
   void AddFavorite(int index) {
     setState(() {
-      ItemsList.elementAt(index).favorite
-          ? ItemsList.elementAt(index).favorite = false
-          : ItemsList.elementAt(index).favorite = true;
+      if (!Favorite.any((el) => el == index)) {
+        Favorite.add(index);
+      } else {
+        Favorite.remove(index);
+      }
+    });
+  }
+
+  void AddShopCart(index) async {
+    setState(() {
+      if (!ShoppingCart.any((el) => el == index)) {
+        ShoppingCart.add(index);
+      } else {
+        ShoppingCart.remove(index);
+      }
     });
   }
 
@@ -34,22 +46,14 @@ class _ItemsPageState extends State<ItemsPage> {
   }
 
   void NavToItem(index) async {
-    bool answ = await Navigator.push(
+    int answ = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ItemPage(item: ItemsList.elementAt(index)),
       ),
     );
     setState(() {
-      ItemsList.elementAt(index).favorite = answ;
-    });
-  }
-
-  void AddShopCart(index) async {
-    setState(() {
-      if (!ShoppingCart.any((el) => el == index)) {
-        ShoppingCart.add(index);
-      }
+      ItemsList.removeAt(answ);
     });
   }
 
@@ -79,7 +83,7 @@ class _ItemsPageState extends State<ItemsPage> {
           ? GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 0.6,
+                childAspectRatio: 0.63,
               ),
               itemCount: ItemsList.length,
               itemBuilder: (BuildContext context, int index) {
@@ -92,7 +96,6 @@ class _ItemsPageState extends State<ItemsPage> {
                         right: 5.0, left: 5.0, top: 2.0, bottom: 5.0),
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.25,
-                      //height: MediaQuery.of(context).size.height * 0.47,
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 255, 246, 218),
                         borderRadius: BorderRadius.circular(7.0),
@@ -170,48 +173,73 @@ class _ItemsPageState extends State<ItemsPage> {
                                 child: Align(
                                   alignment: Alignment.centerRight,
                                   child: IconButton(
-                                      onPressed: () => {AddFavorite(index)},
-                                      icon: ItemsList.elementAt(index).favorite
+                                      onPressed: () => {
+                                            AddFavorite(
+                                                ItemsList.elementAt(index).id)
+                                          },
+                                      icon: Favorite.any((el) =>
+                                              el ==
+                                              ItemsList.elementAt(index).id)
                                           ? const Icon(Icons.favorite)
                                           : const Icon(Icons.favorite_border)),
                                 ),
                               ),
                             ]),
                           ),
-                          !ShoppingCart.any(
+                          ShoppingCart.any(
                                   (el) => el == ItemsList.elementAt(index).id)
-                              ? OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.only(
-                                        top: 1.0,
-                                        bottom: 1.0,
-                                        left: 8.0,
-                                        right: 8.0),
-                                    side: const BorderSide(
-                                        color: Colors.grey,
-                                        width:
-                                            2), // Установка цвета и толщины границы
+                              ? Expanded(
+                                  child: Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 10.0),
+                                    child: OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                        side: const BorderSide(
+                                            color: Colors.grey, width: 2),
+                                      ),
+                                      child: const Text(
+                                        'Убрать',
+                                        style: TextStyle(
+                                            fontSize: 12.0, color: Colors.grey),
+                                      ),
+                                      onPressed: () {
+                                        AddShopCart(
+                                            ItemsList.elementAt(index).id);
+                                      },
+                                    ),
                                   ),
-                                  child: const Text(
-                                    'Добавить в корзину',
-                                    style: TextStyle(
-                                        fontSize: 12.0,
-                                        color:
-                                            Color.fromARGB(255, 136, 136, 136)),
+                                ))
+                              : Expanded(
+                                  child: Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 10.0),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        foregroundColor:
+                                            const Color.fromARGB(255, 0, 0, 0),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                            side: const BorderSide(
+                                                width: 2,
+                                                color: Color.fromRGBO(
+                                                    255, 160, 0, 1))),
+                                        backgroundColor: const Color.fromARGB(
+                                            255, 255, 246, 218),
+                                      ),
+                                      child: const Text("В корзину",
+                                          style: TextStyle(fontSize: 12)),
+                                      onPressed: () {
+                                        AddShopCart(
+                                            ItemsList.elementAt(index).id);
+                                      },
+                                    ),
                                   ),
-                                  onPressed: () {
-                                    AddShopCart(ItemsList.elementAt(index).id);
-                                  },
-                                )
-                              : const Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Товар в корзине',
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        color: Color.fromARGB(255, 6, 196, 9)),
-                                  ),
-                                )
+                                ))
                         ],
                       ),
                     ),

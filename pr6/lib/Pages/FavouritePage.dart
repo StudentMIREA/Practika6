@@ -11,7 +11,9 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> {
-  List<Items> ItemsFavList = ItemsList.where((item) => item.favorite).toList();
+  List<Items> ItemsFavList =
+      ItemsList.where((item) => Favorite.any((element) => element == item.id))
+          .toList();
 
   int findIndexById(int id) {
     return ItemsList.indexWhere((item) => item.id == id);
@@ -19,15 +21,18 @@ class _FavoritePageState extends State<FavoritePage> {
 
   void AddFavorite(int index) {
     setState(() {
-      ItemsList.elementAt(findIndexById(index)).favorite
-          ? ItemsList.elementAt(findIndexById(index)).favorite = false
-          : ItemsList.elementAt(findIndexById(index)).favorite = true;
-      ItemsFavList = ItemsList.where((item) => item.favorite).toList();
+      if (!Favorite.any((el) => el == index)) {
+        Favorite.add(index);
+      } else {
+        Favorite.remove(index);
+      }
+      List<Items> ItemsFavList = ItemsList.where(
+          (item) => Favorite.any((element) => element == item.id)).toList();
     });
   }
 
   void NavToItem(index) async {
-    bool answ = await Navigator.push(
+    int answ = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) =>
@@ -35,8 +40,7 @@ class _FavoritePageState extends State<FavoritePage> {
       ),
     );
     setState(() {
-      ItemsList.elementAt(findIndexById(index)).favorite = answ;
-      ItemsFavList = ItemsList.where((item) => item.favorite).toList();
+      ItemsList.removeAt(answ);
     });
   }
 
@@ -44,6 +48,8 @@ class _FavoritePageState extends State<FavoritePage> {
     setState(() {
       if (!ShoppingCart.any((el) => el == index)) {
         ShoppingCart.add(index);
+      } else {
+        ShoppingCart.remove(index);
       }
     });
   }
@@ -60,7 +66,7 @@ class _FavoritePageState extends State<FavoritePage> {
           ? GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 0.6,
+                childAspectRatio: 0.63,
               ),
               itemCount: ItemsFavList.length,
               itemBuilder: (BuildContext context, int index) {
@@ -161,39 +167,60 @@ class _FavoritePageState extends State<FavoritePage> {
                               ),
                             ]),
                           ),
-                          !ShoppingCart.any((el) =>
+                          ShoppingCart.any((el) =>
                                   el == ItemsFavList.elementAt(index).id)
-                              ? OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.only(
-                                        top: 1.0,
-                                        bottom: 1.0,
-                                        left: 8.0,
-                                        right: 8.0),
-                                    side: const BorderSide(
-                                        color: Colors.grey, width: 2),
+                              ? Expanded(
+                                  child: Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 10.0),
+                                    child: OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                        side: const BorderSide(
+                                            color: Colors.grey, width: 2),
+                                      ),
+                                      child: const Text(
+                                        'Убрать',
+                                        style: TextStyle(
+                                            fontSize: 12.0, color: Colors.grey),
+                                      ),
+                                      onPressed: () {
+                                        AddShopCart(
+                                            ItemsFavList.elementAt(index).id);
+                                      },
+                                    ),
                                   ),
-                                  child: const Text(
-                                    'Добавить в корзину',
-                                    style: TextStyle(
-                                        fontSize: 12.0,
-                                        color:
-                                            Color.fromARGB(255, 136, 136, 136)),
+                                ))
+                              : Expanded(
+                                  child: Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 10.0),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        foregroundColor:
+                                            const Color.fromARGB(255, 0, 0, 0),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                            side: const BorderSide(
+                                                width: 2,
+                                                color: Color.fromRGBO(
+                                                    255, 160, 0, 1))),
+                                        backgroundColor: const Color.fromARGB(
+                                            255, 255, 246, 218),
+                                      ),
+                                      child: const Text("В корзину",
+                                          style: TextStyle(fontSize: 12)),
+                                      onPressed: () {
+                                        AddShopCart(
+                                            ItemsFavList.elementAt(index).id);
+                                      },
+                                    ),
                                   ),
-                                  onPressed: () {
-                                    AddShopCart(
-                                        ItemsFavList.elementAt(index).id);
-                                  },
-                                )
-                              : const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Товар в корзине',
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        color: Color.fromARGB(255, 6, 196, 9)),
-                                  ),
-                                )
+                                ))
                         ],
                       ),
                     ),
