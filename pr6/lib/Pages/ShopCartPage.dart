@@ -1,35 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:pr6/Pages/AddPage.dart';
 import 'package:pr6/Pages/ItemPage.dart';
 import 'package:pr6/Pages/component/Items.dart';
 import 'package:pr6/model/items.dart';
 
-class ItemsPage extends StatefulWidget {
-  const ItemsPage({super.key});
+class ShopCartPage extends StatefulWidget {
+  const ShopCartPage({super.key});
 
   @override
-  State<ItemsPage> createState() => _ItemsPageState();
+  State<ShopCartPage> createState() => _ShopCartPageState();
 }
 
-class _ItemsPageState extends State<ItemsPage> {
-  void AddFavorite(int index) {
-    setState(() {
-      ItemsList.elementAt(index).favorite
-          ? ItemsList.elementAt(index).favorite = false
-          : ItemsList.elementAt(index).favorite = true;
-    });
+class _ShopCartPageState extends State<ShopCartPage> {
+  List<Items> ItemsFromCart = ItemsList.where(
+      (item) => ShoppingCart.any((element) => element == item.id)).toList();
+
+  int findIndexById(int id) {
+    return ItemsList.indexWhere((item) => item.id == id);
   }
 
-  void NavToAdd(BuildContext context) async {
-    Items item = await Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => AddPage(
-                items: ItemsList,
-              )),
-    );
+  void DelCart(int index) {
     setState(() {
-      ItemsList.add(item);
+      ShoppingCart.remove(index);
+      ItemsFromCart = ItemsList.where(
+          (item) => ShoppingCart.any((element) => element == item.id)).toList();
     });
   }
 
@@ -37,19 +30,14 @@ class _ItemsPageState extends State<ItemsPage> {
     bool answ = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemPage(item: ItemsList.elementAt(index)),
+        builder: (context) =>
+            ItemPage(item: ItemsList.elementAt(findIndexById(index))),
       ),
     );
     setState(() {
-      ItemsList.elementAt(index).favorite = answ;
-    });
-  }
-
-  void AddShopCart(index) async {
-    setState(() {
-      if (!ShoppingCart.any((el) => el == index)) {
-        ShoppingCart.add(index);
-      }
+      ItemsList.elementAt(findIndexById(index)).favorite = answ;
+      ItemsFromCart = ItemsList.where(
+          (item) => ShoppingCart.any((element) => element == item.id)).toList();
     });
   }
 
@@ -58,34 +46,20 @@ class _ItemsPageState extends State<ItemsPage> {
     return Scaffold(
       backgroundColor: Colors.amber[200],
       appBar: AppBar(
-        title: const Text('Товары'),
+        title: const Text('Корзина'),
         backgroundColor: Colors.white70,
-        actions: [
-          IconButton(
-            icon: const Padding(
-              padding: EdgeInsets.only(right: 10.0),
-              child: Icon(
-                Icons.add,
-                size: 30,
-              ),
-            ),
-            onPressed: () {
-              NavToAdd(context);
-            },
-          ),
-        ],
       ),
-      body: ItemsList.length != 0
+      body: ItemsFromCart.length != 0
           ? GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 0.6,
+                childAspectRatio: 0.7,
               ),
-              itemCount: ItemsList.length,
+              itemCount: ItemsFromCart.length,
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    NavToItem(index);
+                    NavToItem(ItemsFromCart.elementAt(index).id);
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(
@@ -109,7 +83,7 @@ class _ItemsPageState extends State<ItemsPage> {
                                     Border.all(color: Colors.grey, width: 1),
                               ),
                               child: Image.network(
-                                ItemsList.elementAt(index).image,
+                                ItemsFromCart.elementAt(index).image,
                                 width: MediaQuery.of(context).size.width * 0.4,
                                 height: MediaQuery.of(context).size.width * 0.4,
                                 fit: BoxFit.cover,
@@ -142,7 +116,7 @@ class _ItemsPageState extends State<ItemsPage> {
                             child: SizedBox(
                               height: 35.0,
                               child: Text(
-                                '${ItemsList.elementAt(index).name}',
+                                '${ItemsFromCart.elementAt(index).name}',
                                 style: const TextStyle(fontSize: 12),
                                 softWrap: true,
                                 maxLines: 2,
@@ -160,7 +134,7 @@ class _ItemsPageState extends State<ItemsPage> {
                                 style: TextStyle(fontSize: 12),
                               ),
                               Text(
-                                '${ItemsList.elementAt(index).cost} ₽',
+                                '${ItemsFromCart.elementAt(index).cost} ₽',
                                 style: const TextStyle(
                                     fontSize: 12,
                                     color: Color.fromARGB(255, 6, 196, 9),
@@ -170,55 +144,23 @@ class _ItemsPageState extends State<ItemsPage> {
                                 child: Align(
                                   alignment: Alignment.centerRight,
                                   child: IconButton(
-                                      onPressed: () => {AddFavorite(index)},
-                                      icon: ItemsList.elementAt(index).favorite
-                                          ? const Icon(Icons.favorite)
-                                          : const Icon(Icons.favorite_border)),
+                                      onPressed: () => {
+                                            DelCart(
+                                                ItemsFromCart.elementAt(index)
+                                                    .id)
+                                          },
+                                      icon: const Icon(Icons.delete)),
                                 ),
                               ),
                             ]),
                           ),
-                          !ShoppingCart.any(
-                                  (el) => el == ItemsList.elementAt(index).id)
-                              ? OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.only(
-                                        top: 1.0,
-                                        bottom: 1.0,
-                                        left: 8.0,
-                                        right: 8.0),
-                                    side: const BorderSide(
-                                        color: Colors.grey,
-                                        width:
-                                            2), // Установка цвета и толщины границы
-                                  ),
-                                  child: const Text(
-                                    'Добавить в корзину',
-                                    style: TextStyle(
-                                        fontSize: 12.0,
-                                        color:
-                                            Color.fromARGB(255, 136, 136, 136)),
-                                  ),
-                                  onPressed: () {
-                                    AddShopCart(ItemsList.elementAt(index).id);
-                                  },
-                                )
-                              : const Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Товар в корзине',
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        color: Color.fromARGB(255, 6, 196, 9)),
-                                  ),
-                                )
                         ],
                       ),
                     ),
                   ),
                 );
               })
-          : const Center(child: Text('Нет товаров')),
+          : const Center(child: Text('Корзина пуста')),
     );
   }
 }

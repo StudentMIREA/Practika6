@@ -1,5 +1,7 @@
 import 'package:pr6/model/items.dart';
 
+final List<int> ShoppingCart = <int>[];
+
 final List<Items> ItemsList = <Items>[
   Items(
       1,
