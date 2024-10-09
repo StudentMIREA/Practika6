@@ -18,14 +18,64 @@ class _ShopCartPageState extends State<ShopCartPage> {
     return ItemsList.indexWhere((item) => item.id == id);
   }
 
-  void DelCart(int index) {
-    setState(() {
-      ShoppingCart.remove(index);
-      ItemsFromCart = ItemsList.where(
-          (item) => ShoppingCart.any((element) => element == item.id)).toList();
+  // Удаление из корзины
+  void DelCart(int i, BuildContext context) {
+    showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        backgroundColor: const Color.fromARGB(255, 255, 246, 218),
+        title: Container(
+          width: MediaQuery.of(context).size.width * 0.9,
+          child: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Center(
+              child: Text(
+                'Удалить товар из корзины?',
+                style: TextStyle(fontSize: 16.00, color: Colors.black),
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.amber[700]),
+            child: const Text('Ок',
+                style: TextStyle(color: Colors.black, fontSize: 14.0)),
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
+          ),
+          TextButton(
+            child: const Text('Отмена',
+                style: TextStyle(color: Colors.black, fontSize: 14.0)),
+            onPressed: () {
+              Navigator.pop(context, false);
+            },
+          ),
+        ],
+      ),
+    ).then((bool? isDeleted) {
+      if (isDeleted != null && isDeleted) {
+        setState(() {
+          ShoppingCart.remove(i);
+          ItemsFromCart = ItemsList.where(
+                  (item) => ShoppingCart.any((element) => element == item.id))
+              .toList();
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Товар успешно удален',
+              style: TextStyle(color: Colors.black, fontSize: 16.0),
+            ),
+            backgroundColor: Colors.amber[700],
+          ),
+        );
+      }
     });
   }
 
+  // Переход на страницу с товарами
   void NavToItem(index) async {
     bool answ = await Navigator.push(
       context,
@@ -140,6 +190,7 @@ class _ShopCartPageState extends State<ShopCartPage> {
                                     color: Color.fromARGB(255, 6, 196, 9),
                                     fontWeight: FontWeight.bold),
                               ),
+                              // Кнопка удаления
                               Expanded(
                                 child: Align(
                                   alignment: Alignment.centerRight,
@@ -147,7 +198,8 @@ class _ShopCartPageState extends State<ShopCartPage> {
                                       onPressed: () => {
                                             DelCart(
                                                 ItemsFromCart.elementAt(index)
-                                                    .id)
+                                                    .id,
+                                                context)
                                           },
                                       icon: const Icon(Icons.delete)),
                                 ),
