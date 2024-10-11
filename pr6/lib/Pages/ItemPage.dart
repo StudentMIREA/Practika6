@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pr6/Pages/component/Items.dart';
+import 'package:pr6/model/ShoppingCart.dart';
 import 'package:pr6/model/items.dart';
 
 class ItemPage extends StatefulWidget {
@@ -27,10 +28,10 @@ class _ItemPageState extends State<ItemPage> {
 
   void AddShopCart(index) async {
     setState(() {
-      if (!ShoppingCart.any((el) => el == index)) {
-        ShoppingCart.add(index);
+      if (!ShoppingCart.any((el) => el.id == index)) {
+        ShoppingCart.add(ShoppingCartItem(index, 1));
       } else {
-        ShoppingCart.remove(index);
+        ShoppingCart.removeWhere((el) => el.id == index);
       }
     });
   }
@@ -83,8 +84,8 @@ class _ItemPageState extends State<ItemPage> {
     ).then((bool? isDeleted) {
       if (isDeleted != null && isDeleted) {
         setState(() {
-          if (ShoppingCart.any((el) => el == i)) {
-            ShoppingCart.remove(i);
+          if (ShoppingCart.any((el) => el.id == i)) {
+            ShoppingCart.removeWhere((el) => el.id == i);
           }
           if (Favorite.any((el) => el == i)) {
             Favorite.remove(i);
@@ -193,7 +194,7 @@ class _ItemPageState extends State<ItemPage> {
                                       onPressed: () =>
                                           {AddShopCart(widget.item.id)},
                                       icon: !ShoppingCart.any(
-                                              (el) => el == widget.item.id)
+                                              (el) => el.id == widget.item.id)
                                           ? const Icon(
                                               Icons.shopping_cart_outlined)
                                           : const Icon(

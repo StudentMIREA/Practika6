@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pr6/Pages/ItemPage.dart';
 import 'package:pr6/Pages/component/Items.dart';
+import 'package:pr6/model/ShoppingCart.dart';
 import 'package:pr6/model/items.dart';
 
 class FavoritePage extends StatefulWidget {
@@ -35,22 +36,25 @@ class _FavoritePageState extends State<FavoritePage> {
     int? answ = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemPage(item: ItemsList.elementAt(index)),
+        builder: (context) => ItemPage(
+            item: ItemsList.firstWhere((element) => element.id == index)),
       ),
     );
     setState(() {
       if (answ != null) {
         ItemsList.removeAt(answ);
       }
+      ItemsFavList = ItemsList.where(
+          (item) => Favorite.any((element) => element == item.id)).toList();
     });
   }
 
   void AddShopCart(index) async {
     setState(() {
-      if (!ShoppingCart.any((el) => el == index)) {
-        ShoppingCart.add(index);
+      if (!ShoppingCart.any((el) => el.id == index)) {
+        ShoppingCart.add(ShoppingCartItem(index, 1));
       } else {
-        ShoppingCart.remove(index);
+        ShoppingCart.removeWhere((el) => el.id == index);
       }
     });
   }
@@ -169,7 +173,7 @@ class _FavoritePageState extends State<FavoritePage> {
                             ]),
                           ),
                           ShoppingCart.any((el) =>
-                                  el == ItemsFavList.elementAt(index).id)
+                                  el.id == ItemsFavList.elementAt(index).id)
                               ? Expanded(
                                   child: Align(
                                   alignment: Alignment.bottomCenter,

@@ -1,6 +1,8 @@
+import 'package:pr6/Pages/ShopCartPage.dart';
+import 'package:pr6/model/ShoppingCart.dart';
 import 'package:pr6/model/items.dart';
 
-final List<int> ShoppingCart = <int>[];
+final List<ShoppingCartItem> ShoppingCart = <ShoppingCartItem>[];
 final List<int> Favorite = <int>[];
 
 final List<Items> ItemsList = <Items>[

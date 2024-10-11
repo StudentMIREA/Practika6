@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pr6/Pages/AddPage.dart';
 import 'package:pr6/Pages/ItemPage.dart';
 import 'package:pr6/Pages/component/Items.dart';
+import 'package:pr6/model/ShoppingCart.dart';
 import 'package:pr6/model/items.dart';
 
 class ItemsPage extends StatefulWidget {
@@ -24,10 +25,10 @@ class _ItemsPageState extends State<ItemsPage> {
 
   void AddShopCart(index) async {
     setState(() {
-      if (!ShoppingCart.any((el) => el == index)) {
-        ShoppingCart.add(index);
+      if (!ShoppingCart.any((el) => el.id == index)) {
+        ShoppingCart.add(ShoppingCartItem(index, 1));
       } else {
-        ShoppingCart.remove(index);
+        ShoppingCart.removeWhere((el) => el.id == index);
       }
     });
   }
@@ -188,8 +189,8 @@ class _ItemsPageState extends State<ItemsPage> {
                               ),
                             ]),
                           ),
-                          ShoppingCart.any(
-                                  (el) => el == ItemsList.elementAt(index).id)
+                          ShoppingCart.any((el) =>
+                                  el.id == ItemsList.elementAt(index).id)
                               ? Expanded(
                                   child: Align(
                                   alignment: Alignment.bottomCenter,

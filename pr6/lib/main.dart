@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
               label: 'Избранное',
               backgroundColor: Color.fromRGBO(255, 236, 179, 1)),
           BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart_outlined),
+              icon: Icon(Icons.shopping_cart_rounded),
               label: 'Корзина',
               backgroundColor: Color.fromRGBO(255, 236, 179, 1)),
           BottomNavigationBarItem(
