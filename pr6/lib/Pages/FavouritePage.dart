@@ -5,7 +5,9 @@ import 'package:pr6/model/ShoppingCart.dart';
 import 'package:pr6/model/items.dart';
 
 class FavoritePage extends StatefulWidget {
-  const FavoritePage({super.key});
+  const FavoritePage({super.key, required this.updateCount});
+
+  final Function() updateCount;
 
   @override
   State<FavoritePage> createState() => _FavoritePageState();
@@ -37,7 +39,9 @@ class _FavoritePageState extends State<FavoritePage> {
       context,
       MaterialPageRoute(
         builder: (context) => ItemPage(
-            item: ItemsList.firstWhere((element) => element.id == index)),
+          item: ItemsList.firstWhere((element) => element.id == index),
+          updateCount: () => widget.updateCount(),
+        ),
       ),
     );
     setState(() {
@@ -56,6 +60,7 @@ class _FavoritePageState extends State<FavoritePage> {
       } else {
         ShoppingCart.removeWhere((el) => el.id == index);
       }
+      widget.updateCount();
     });
   }
 

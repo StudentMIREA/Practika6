@@ -4,7 +4,9 @@ import 'package:pr6/Pages/component/Items.dart';
 import 'package:pr6/model/items.dart';
 
 class ShopCartPage extends StatefulWidget {
-  const ShopCartPage({super.key});
+  const ShopCartPage({super.key, required this.updateCount});
+
+  final Function() updateCount;
 
   @override
   State<ShopCartPage> createState() => _ShopCartPageState();
@@ -81,7 +83,9 @@ class _ShopCartPageState extends State<ShopCartPage> {
       context,
       MaterialPageRoute(
         builder: (context) => ItemPage(
-            item: ItemsList.firstWhere((element) => element.id == index)),
+          item: ItemsList.firstWhere((element) => element.id == index),
+          updateCount: () => widget.updateCount(),
+        ),
       ),
     );
     setState(() {
@@ -114,6 +118,7 @@ class _ShopCartPageState extends State<ShopCartPage> {
       _controllers[ItemsFromCart.indexWhere((item) => item.id == index)].text =
           ShoppingCart.elementAt(
               ShoppingCart.indexWhere((el) => el.id == index)).count.toString();
+      widget.updateCount();
     });
   }
 
@@ -131,6 +136,7 @@ class _ShopCartPageState extends State<ShopCartPage> {
                 .count
                 .toString();
       }
+      widget.updateCount();
     });
   }
 
@@ -155,6 +161,7 @@ class _ShopCartPageState extends State<ShopCartPage> {
                 .count
                 .toString();
       }
+      widget.updateCount();
     });
   }
 
@@ -221,6 +228,8 @@ class _ShopCartPageState extends State<ShopCartPage> {
                                             .toString(),
                                       ));
                                     }
+
+                                    widget.updateCount();
                                   });
 
                                   ScaffoldMessenger.of(context).showSnackBar(

@@ -6,7 +6,9 @@ import 'package:pr6/model/ShoppingCart.dart';
 import 'package:pr6/model/items.dart';
 
 class ItemsPage extends StatefulWidget {
-  const ItemsPage({super.key});
+  const ItemsPage({super.key, required this.updateCount});
+
+  final Function() updateCount;
 
   @override
   State<ItemsPage> createState() => _ItemsPageState();
@@ -30,6 +32,7 @@ class _ItemsPageState extends State<ItemsPage> {
       } else {
         ShoppingCart.removeWhere((el) => el.id == index);
       }
+      widget.updateCount();
     });
   }
 
@@ -50,7 +53,10 @@ class _ItemsPageState extends State<ItemsPage> {
     int? answ = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemPage(item: ItemsList.elementAt(index)),
+        builder: (context) => ItemPage(
+          item: ItemsList.elementAt(index),
+          updateCount: () => widget.updateCount(),
+        ),
       ),
     );
     setState(() {

@@ -4,8 +4,9 @@ import 'package:pr6/model/ShoppingCart.dart';
 import 'package:pr6/model/items.dart';
 
 class ItemPage extends StatefulWidget {
-  const ItemPage({super.key, required this.item});
+  const ItemPage({super.key, required this.item, required this.updateCount});
   final Items item;
+  final Function() updateCount;
 
   @override
   State<ItemPage> createState() => _ItemPageState();
@@ -33,6 +34,7 @@ class _ItemPageState extends State<ItemPage> {
       } else {
         ShoppingCart.removeWhere((el) => el.id == index);
       }
+      widget.updateCount();
     });
   }
 
@@ -86,6 +88,7 @@ class _ItemPageState extends State<ItemPage> {
         setState(() {
           if (ShoppingCart.any((el) => el.id == i)) {
             ShoppingCart.removeWhere((el) => el.id == i);
+            widget.updateCount();
           }
           if (Favorite.any((el) => el == i)) {
             Favorite.remove(i);
