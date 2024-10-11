@@ -1,4 +1,3 @@
-import 'package:pr6/Pages/ShopCartPage.dart';
 import 'package:pr6/model/ShoppingCart.dart';
 import 'package:pr6/model/items.dart';
 
