@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12.0,
-                                  color: Color.fromRGBO(255, 160, 0, 1)),
+                                  color: Color.fromARGB(255, 201, 127, 0)),
                             ),
                       badgeStyle: const badges.BadgeStyle(
                         badgeColor: Color.fromRGBO(255, 162, 0, 0),
