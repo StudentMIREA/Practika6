@@ -108,6 +108,28 @@ class _ItemPageState extends State<ItemPage> {
     });
   }
 
+  void increment(index) {
+    setState(() {
+      ShoppingCart.elementAt(ShoppingCart.indexWhere((el) => el.id == index))
+          .count++;
+      widget.updateCount();
+    });
+  }
+
+  void decrement(index) {
+    setState(() {
+      if (ShoppingCart.elementAt(
+              ShoppingCart.indexWhere((el) => el.id == index)).count >
+          1) {
+        ShoppingCart.elementAt(ShoppingCart.indexWhere((el) => el.id == index))
+            .count--;
+      } else {
+        ShoppingCart.removeWhere((el) => el.id == index);
+      }
+      widget.updateCount();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,46 +196,144 @@ class _ItemPageState extends State<ItemPage> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 50.0, right: 40.0),
-                          child: Row(children: [
-                            const Text(
-                              'Цена: ',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            Text(
-                              '${widget.item.cost} ₽',
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Color.fromARGB(255, 6, 196, 9),
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
+                        !ShoppingCart.any((el) => el.id == widget.item.id)
+                            ? Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 50.0, right: 40.0),
+                                child: Row(children: [
+                                  const Text(
+                                    'Цена: ',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  Text(
+                                    '${widget.item.cost} ₽',
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Color.fromARGB(255, 6, 196, 9),
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        IconButton(
+                                            onPressed: () =>
+                                                {AddShopCart(widget.item.id)},
+                                            icon: const Icon(
+                                                Icons.shopping_cart_outlined)),
+                                        IconButton(
+                                            onPressed: () =>
+                                                {AddFavorite(widget.item.id)},
+                                            icon: Favorite.any((el) =>
+                                                    el == widget.item.id)
+                                                ? const Icon(Icons.favorite)
+                                                : const Icon(
+                                                    Icons.favorite_border)),
+                                      ],
+                                    ),
+                                  ),
+                                ]),
+                              )
+                            : Column(
                                 children: [
-                                  IconButton(
-                                      onPressed: () =>
-                                          {AddShopCart(widget.item.id)},
-                                      icon: !ShoppingCart.any(
-                                              (el) => el.id == widget.item.id)
-                                          ? const Icon(
-                                              Icons.shopping_cart_outlined)
-                                          : const Icon(
-                                              Icons.shopping_cart_rounded)),
-                                  IconButton(
-                                      onPressed: () =>
-                                          {AddFavorite(widget.item.id)},
-                                      icon: Favorite.any(
-                                              (el) => el == widget.item.id)
-                                          ? const Icon(Icons.favorite)
-                                          : const Icon(Icons.favorite_border)),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 50.0, right: 40.0),
+                                    child: Row(children: [
+                                      const Text(
+                                        'Цена: ',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                      Text(
+                                        '${widget.item.cost} ₽',
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            color:
+                                                Color.fromARGB(255, 6, 196, 9),
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Expanded(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            IconButton(
+                                                onPressed: () => {
+                                                      AddFavorite(
+                                                          widget.item.id)
+                                                    },
+                                                icon: Favorite.any((el) =>
+                                                        el == widget.item.id)
+                                                    ? const Icon(Icons.favorite)
+                                                    : const Icon(
+                                                        Icons.favorite_border)),
+                                          ],
+                                        ),
+                                      ),
+                                    ]),
+                                  ),
+                                  SizedBox(
+                                    height: 60.0,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.7,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 5.0, right: 5.0),
+                                      child: Expanded(
+                                        child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              IconButton(
+                                                icon: Icon(Icons.remove),
+                                                onPressed: () =>
+                                                    decrement(widget.item.id),
+                                                iconSize: 30,
+                                              ),
+                                              Container(
+                                                height: 40.0,
+                                                width: 40.0,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                  border: Border.all(
+                                                      color: Colors.black,
+                                                      width: 1),
+                                                ),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(5.0),
+                                                  child: Text(
+                                                    ShoppingCart.elementAt(
+                                                            ShoppingCart
+                                                                .indexWhere(
+                                                                    (el) =>
+                                                                        el.id ==
+                                                                        widget
+                                                                            .item
+                                                                            .id))
+                                                        .count
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                        fontSize: 16.0,
+                                                        color: Colors.black),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ),
+                                              IconButton(
+                                                icon: Icon(Icons.add),
+                                                onPressed: () =>
+                                                    increment(widget.item.id),
+                                                iconSize: 30,
+                                              ),
+                                            ]),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
-                            ),
-                          ]),
-                        ),
                         const SizedBox(
                           height: 25.0,
                         ),

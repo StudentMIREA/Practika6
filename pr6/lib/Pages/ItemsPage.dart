@@ -217,6 +217,7 @@ class _ItemsPageState extends State<ItemsPage> {
                               ),
                             ]),
                           ),
+//Количество товаров в корзине
                           ShoppingCart.any((el) =>
                                   el.id == ItemsList.elementAt(index).id)
                               ? SizedBox(
@@ -277,6 +278,7 @@ class _ItemsPageState extends State<ItemsPage> {
                                     ),
                                   ),
                                 )
+//Добавление в корзину
                               : Expanded(
                                   child: Align(
                                   alignment: Alignment.bottomCenter,
