@@ -77,6 +77,47 @@ class _ShopCartPageState extends State<ShopCartPage> {
     );
   }
 
+  Future<bool?> confirmDismiss() async {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color.fromARGB(255, 255, 246, 218),
+          title: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Center(
+                child: Text(
+                  'Удалить товар из корзины?',
+                  style: TextStyle(fontSize: 16.00, color: Colors.black),
+                ),
+              ),
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.amber[700]),
+              child: const Text('Ок',
+                  style: TextStyle(color: Colors.black, fontSize: 14.0)),
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+            ),
+            TextButton(
+              child: const Text('Отмена',
+                  style: TextStyle(color: Colors.black, fontSize: 14.0)),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // Переход на страницу с товарами
   void NavToItem(index) async {
     int? answ = await Navigator.push(
@@ -113,22 +154,11 @@ class _ShopCartPageState extends State<ShopCartPage> {
 
   void increment(index) {
     setState(() {
-      ShoppingCart.elementAt(ShoppingCart.indexWhere((el) => el.id == index))
-          .count++;
-      _controllers[ItemsFromCart.indexWhere((item) => item.id == index)].text =
-          ShoppingCart.elementAt(
-              ShoppingCart.indexWhere((el) => el.id == index)).count.toString();
-      widget.updateCount();
-    });
-  }
-
-  void decrement(index) {
-    setState(() {
       if (ShoppingCart.elementAt(
-              ShoppingCart.indexWhere((el) => el.id == index)).count >
-          1) {
+              ShoppingCart.indexWhere((el) => el.id == index)).count <
+          99) {
         ShoppingCart.elementAt(ShoppingCart.indexWhere((el) => el.id == index))
-            .count--;
+            .count++;
         _controllers[ItemsFromCart.indexWhere((item) => item.id == index)]
                 .text =
             ShoppingCart.elementAt(
@@ -140,20 +170,13 @@ class _ShopCartPageState extends State<ShopCartPage> {
     });
   }
 
-  void changeValue(index, text) {
+  void decrement(index) {
     setState(() {
-      if (int.tryParse(text)! < 1 || int.tryParse(text)! > 99) {
+      if (ShoppingCart.elementAt(
+              ShoppingCart.indexWhere((el) => el.id == index)).count >
+          1) {
         ShoppingCart.elementAt(ShoppingCart.indexWhere((el) => el.id == index))
-            .count = 1;
-        _controllers[ItemsFromCart.indexWhere((item) => item.id == index)]
-                .text =
-            ShoppingCart.elementAt(
-                    ShoppingCart.indexWhere((el) => el.id == index))
-                .count
-                .toString();
-      } else {
-        ShoppingCart.elementAt(ShoppingCart.indexWhere((el) => el.id == index))
-            .count = int.tryParse(text)!;
+            .count--;
         _controllers[ItemsFromCart.indexWhere((item) => item.id == index)]
                 .text =
             ShoppingCart.elementAt(
@@ -197,7 +220,7 @@ class _ShopCartPageState extends State<ShopCartPage> {
                                   ),
                                 ),
                               )
-                            // удаление с помощью свайпа влево
+// удаление с помощью свайпа влево
                             : Dismissible(
                                 key: Key(ItemsFromCart.elementAt(index)
                                     .id
@@ -231,18 +254,6 @@ class _ShopCartPageState extends State<ShopCartPage> {
 
                                     widget.updateCount();
                                   });
-
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: const Text(
-                                        'Товар успешно удален',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16.0),
-                                      ),
-                                      backgroundColor: Colors.amber[700],
-                                    ),
-                                  );
                                 },
                                 background: Container(
                                   color: Colors.amber[700],
@@ -252,7 +263,7 @@ class _ShopCartPageState extends State<ShopCartPage> {
                                   child: const Icon(Icons.delete,
                                       color: Colors.white),
                                 ),
-                                // карточка товара
+// карточка товара
                                 child: GestureDetector(
                                   onTap: () {
                                     NavToItem(
@@ -381,6 +392,7 @@ class _ShopCartPageState extends State<ShopCartPage> {
                                                         ),
                                                       ]),
                                                 ),
+//изменение количества товара
                                                 SizedBox(
                                                   height: 50.0,
                                                   width: MediaQuery.of(context)
@@ -402,44 +414,38 @@ class _ShopCartPageState extends State<ShopCartPage> {
                                                                         index)
                                                                 .id),
                                                       ),
-                                                      Expanded(
-                                                        child: SizedBox(
-                                                          height: 30.0,
-                                                          child: TextFormField(
-                                                            controller: _controllers[
-                                                                ItemsFromCart.indexWhere((item) =>
-                                                                    item.id ==
-                                                                    ItemsFromCart.elementAt(
-                                                                            index)
-                                                                        .id)],
-                                                            keyboardType:
-                                                                TextInputType
-                                                                    .number,
-                                                            textAlign: TextAlign
-                                                                .center,
+                                                      Container(
+                                                        height: 30.0,
+                                                        width: 30.0,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      5.0),
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.black,
+                                                              width: 1),
+                                                        ),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(5.0),
+                                                          child: Text(
+                                                            ShoppingCart
+                                                                    .elementAt(
+                                                                        index)
+                                                                .count
+                                                                .toString(),
                                                             style:
                                                                 const TextStyle(
                                                                     fontSize:
                                                                         14.0,
                                                                     color: Colors
                                                                         .black),
-                                                            decoration:
-                                                                const InputDecoration(
-                                                              border:
-                                                                  OutlineInputBorder(),
-                                                              contentPadding:
-                                                                  EdgeInsets
-                                                                      .all(0.0),
-                                                            ),
-                                                            onChanged: (text) =>
-                                                                {
-                                                              changeValue(
-                                                                  ItemsFromCart
-                                                                          .elementAt(
-                                                                              index)
-                                                                      .id,
-                                                                  text)
-                                                            },
+                                                            textAlign: TextAlign
+                                                                .center,
                                                           ),
                                                         ),
                                                       ),

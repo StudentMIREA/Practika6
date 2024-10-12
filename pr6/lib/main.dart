@@ -60,7 +60,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void onTab(int i) {
     setState(() {
       selectedIndex = i;
-      count = ShoppingCart.length;
     });
   }
 

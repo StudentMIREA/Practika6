@@ -66,6 +66,28 @@ class _ItemsPageState extends State<ItemsPage> {
     });
   }
 
+  void increment(index) {
+    setState(() {
+      ShoppingCart.elementAt(ShoppingCart.indexWhere((el) => el.id == index))
+          .count++;
+      widget.updateCount();
+    });
+  }
+
+  void decrement(index) {
+    setState(() {
+      if (ShoppingCart.elementAt(
+              ShoppingCart.indexWhere((el) => el.id == index)).count >
+          1) {
+        ShoppingCart.elementAt(ShoppingCart.indexWhere((el) => el.id == index))
+            .count--;
+      } else {
+        ShoppingCart.removeWhere((el) => el.id == index);
+      }
+      widget.updateCount();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -197,29 +219,64 @@ class _ItemsPageState extends State<ItemsPage> {
                           ),
                           ShoppingCart.any((el) =>
                                   el.id == ItemsList.elementAt(index).id)
-                              ? Expanded(
-                                  child: Align(
-                                  alignment: Alignment.bottomCenter,
+                              ? SizedBox(
+                                  height: 40.0,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.4,
                                   child: Padding(
-                                    padding:
-                                        const EdgeInsets.only(bottom: 10.0),
-                                    child: OutlinedButton(
-                                      style: OutlinedButton.styleFrom(
-                                        side: const BorderSide(
-                                            color: Colors.grey, width: 2),
-                                      ),
-                                      child: const Text(
-                                        'Убрать',
-                                        style: TextStyle(
-                                            fontSize: 12.0, color: Colors.grey),
-                                      ),
-                                      onPressed: () {
-                                        AddShopCart(
-                                            ItemsList.elementAt(index).id);
-                                      },
+                                    padding: const EdgeInsets.only(
+                                        left: 5.0, right: 5.0),
+                                    child: Expanded(
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            IconButton(
+                                              icon: Icon(Icons.remove),
+                                              onPressed: () => decrement(
+                                                  ItemsList.elementAt(index)
+                                                      .id),
+                                            ),
+                                            Container(
+                                              height: 25.0,
+                                              width: 30.0,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(5.0),
+                                                border: Border.all(
+                                                    color: Colors.black,
+                                                    width: 1),
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(1.0),
+                                                child: Text(
+                                                  ShoppingCart.elementAt(ShoppingCart
+                                                          .indexWhere((el) =>
+                                                              el.id ==
+                                                              ItemsList
+                                                                      .elementAt(
+                                                                          index)
+                                                                  .id))
+                                                      .count
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                      fontSize: 14.0,
+                                                      color: Colors.black),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                            IconButton(
+                                              icon: Icon(Icons.add),
+                                              onPressed: () => increment(
+                                                  ItemsList.elementAt(index)
+                                                      .id),
+                                            ),
+                                          ]),
                                     ),
                                   ),
-                                ))
+                                )
                               : Expanded(
                                   child: Align(
                                   alignment: Alignment.bottomCenter,
