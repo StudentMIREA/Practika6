@@ -437,9 +437,11 @@ class _ShopCartPageState extends State<ShopCartPage> {
                                                               const EdgeInsets
                                                                   .all(5.0),
                                                           child: Text(
-                                                            ShoppingCart
-                                                                    .elementAt(
-                                                                        index)
+                                                            ShoppingCart.elementAt(
+                                                                    ShoppingCart.indexWhere((el) =>
+                                                                        el.id ==
+                                                                        ItemsFromCart.elementAt(index)
+                                                                            .id))
                                                                 .count
                                                                 .toString(),
                                                             style:
