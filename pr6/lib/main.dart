@@ -44,23 +44,23 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void onTab(int i) {
+    setState(() {
+      selectedIndex = i;
+    });
+  }
+
   static List<Widget> widgetOptions = <Widget>[];
 
   @override
   void initState() {
     super.initState();
     widgetOptions = [
-      ItemsPage(updateCount: updateCount),
-      FavoritePage(updateCount: updateCount),
-      ShopCartPage(updateCount: updateCount),
+      ItemsPage(updateCount: updateCount, navToShopCart: (i) => onTab(i)),
+      FavoritePage(updateCount: updateCount, navToShopCart: (i) => onTab(i)),
+      ShopCartPage(updateCount: updateCount, navToShopCart: (i) => onTab(i)),
       const ProfilePage()
     ];
-  }
-
-  void onTab(int i) {
-    setState(() {
-      selectedIndex = i;
-    });
   }
 
   @override

@@ -6,9 +6,11 @@ import 'package:pr6/model/ShoppingCart.dart';
 import 'package:pr6/model/items.dart';
 
 class ItemsPage extends StatefulWidget {
-  const ItemsPage({super.key, required this.updateCount});
+  const ItemsPage(
+      {super.key, required this.updateCount, required this.navToShopCart});
 
   final Function() updateCount;
+  final Function(int i) navToShopCart;
 
   @override
   State<ItemsPage> createState() => _ItemsPageState();
@@ -56,6 +58,7 @@ class _ItemsPageState extends State<ItemsPage> {
         builder: (context) => ItemPage(
           item: ItemsList.elementAt(index),
           updateCount: () => widget.updateCount(),
+          navToShopCart: (i) => widget.navToShopCart(i),
         ),
       ),
     );
@@ -245,8 +248,9 @@ class _ItemsPageState extends State<ItemsPage> {
                                                 borderRadius:
                                                     BorderRadius.circular(5.0),
                                                 border: Border.all(
-                                                    color: Colors.black,
-                                                    width: 1),
+                                                    color: const Color.fromRGBO(
+                                                        255, 160, 0, 1),
+                                                    width: 2),
                                               ),
                                               child: Padding(
                                                 padding:

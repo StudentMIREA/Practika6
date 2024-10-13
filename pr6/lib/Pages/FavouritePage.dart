@@ -5,9 +5,11 @@ import 'package:pr6/model/ShoppingCart.dart';
 import 'package:pr6/model/items.dart';
 
 class FavoritePage extends StatefulWidget {
-  const FavoritePage({super.key, required this.updateCount});
+  const FavoritePage(
+      {super.key, required this.updateCount, required this.navToShopCart});
 
   final Function() updateCount;
+  final Function(int i) navToShopCart;
 
   @override
   State<FavoritePage> createState() => _FavoritePageState();
@@ -41,6 +43,7 @@ class _FavoritePageState extends State<FavoritePage> {
         builder: (context) => ItemPage(
           item: ItemsList.firstWhere((element) => element.id == index),
           updateCount: () => widget.updateCount(),
+          navToShopCart: (i) => widget.navToShopCart(i),
         ),
       ),
     );
@@ -226,8 +229,9 @@ class _FavoritePageState extends State<FavoritePage> {
                                                 borderRadius:
                                                     BorderRadius.circular(5.0),
                                                 border: Border.all(
-                                                    color: Colors.black,
-                                                    width: 1),
+                                                    color: const Color.fromRGBO(
+                                                        255, 160, 0, 1),
+                                                    width: 2),
                                               ),
                                               child: Padding(
                                                 padding:

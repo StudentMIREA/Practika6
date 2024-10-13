@@ -4,9 +4,14 @@ import 'package:pr6/model/ShoppingCart.dart';
 import 'package:pr6/model/items.dart';
 
 class ItemPage extends StatefulWidget {
-  const ItemPage({super.key, required this.item, required this.updateCount});
+  const ItemPage(
+      {super.key,
+      required this.item,
+      required this.updateCount,
+      required this.navToShopCart});
   final Items item;
   final Function() updateCount;
+  final Function(int i) navToShopCart;
 
   @override
   State<ItemPage> createState() => _ItemPageState();
@@ -196,6 +201,7 @@ class _ItemPageState extends State<ItemPage> {
                             ),
                           ),
                         ),
+// товар не добавлен в корзину
                         !ShoppingCart.any((el) => el.id == widget.item.id)
                             ? Padding(
                                 padding: const EdgeInsets.only(
@@ -234,6 +240,7 @@ class _ItemPageState extends State<ItemPage> {
                                   ),
                                 ]),
                               )
+// товар добавлен в корзину
                             : Column(
                                 children: [
                                   Padding(
@@ -284,6 +291,38 @@ class _ItemPageState extends State<ItemPage> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
+                                              ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    foregroundColor:
+                                                        const Color.fromARGB(
+                                                            255, 0, 0, 0),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(30),
+                                                        side: const BorderSide(
+                                                            width: 2,
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    255,
+                                                                    160,
+                                                                    0,
+                                                                    1))),
+                                                    backgroundColor:
+                                                        const Color.fromARGB(
+                                                            255, 255, 246, 218),
+                                                  ),
+                                                  child: const Text("В корзину",
+                                                      style: TextStyle(
+                                                          fontSize: 12)),
+                                                  onPressed: () => {
+                                                        widget.navToShopCart(2),
+                                                        Navigator.pop(context)
+                                                      }),
+                                              const SizedBox(
+                                                width: 5,
+                                              ),
                                               IconButton(
                                                 icon: Icon(Icons.remove),
                                                 onPressed: () =>
@@ -298,8 +337,10 @@ class _ItemPageState extends State<ItemPage> {
                                                       BorderRadius.circular(
                                                           5.0),
                                                   border: Border.all(
-                                                      color: Colors.black,
-                                                      width: 1),
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                              255, 160, 0, 1),
+                                                      width: 2),
                                                 ),
                                                 child: Padding(
                                                   padding:
