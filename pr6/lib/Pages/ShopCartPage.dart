@@ -419,7 +419,7 @@ class _ShopCartPageState extends State<ShopCartPage> {
                                                       ),
                                                       Container(
                                                         height: 30.0,
-                                                        width: 30.0,
+                                                        width: 40.0,
                                                         decoration:
                                                             BoxDecoration(
                                                           borderRadius:
