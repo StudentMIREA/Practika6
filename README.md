@@ -59,8 +59,8 @@
 
 Для удаления необходимо свайпнуть товар влево.
 
-<img src="https://github.com/user-attachments/assets/76e443ae-1523-410e-b118-3e8a92f9237e" width="300">
-<img src="https://github.com/user-attachments/assets/249f8aeb-bbb1-4b89-a0f5-b895ea9f623b" width="300">
+<img src="https://github.com/user-attachments/assets/0db4426f-3602-4b22-bb6a-471dcb5f4cde" width="300">
+<img src="https://github.com/user-attachments/assets/362aa429-e8a1-4740-81dd-640baf1c59ab" width="300">
 
 #### 6. Создание страницы профиля.
 На этой странице находится информация о пользователе. Внизу находится панель навигации. При нажатии на иконку редактирования осуществляется переход на страницу редактирования профиля.
