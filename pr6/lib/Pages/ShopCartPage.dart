@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pr6/Pages/ItemPage.dart';
 import 'package:pr6/Pages/component/Items.dart';
 import 'package:pr6/model/items.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ShopCartPage extends StatefulWidget {
   const ShopCartPage(
@@ -224,48 +225,57 @@ class _ShopCartPageState extends State<ShopCartPage> {
                                 ),
                               )
 // удаление с помощью свайпа влево
-                            : Dismissible(
+                            : Slidable(
                                 key: Key(ItemsFromCart.elementAt(index)
                                     .id
                                     .toString()),
-                                direction: DismissDirection.endToStart,
-                                confirmDismiss: (direction) async {
-                                  return await _confirmDismiss();
-                                },
-                                onDismissed: (direction) {
-                                  setState(() {
-                                    int itemId =
-                                        ItemsFromCart.elementAt(index).id;
-                                    ShoppingCart.removeWhere(
-                                        (el) => el.id == itemId);
-                                    ItemsFromCart = ItemsList.where((item) =>
-                                        ShoppingCart.any((element) =>
-                                            element.id == item.id)).toList();
-                                    _controllers = [];
-                                    for (var i = 0;
-                                        i < ItemsFromCart.length;
-                                        i++) {
-                                      _controllers.add(TextEditingController(
-                                        text: ShoppingCart.elementAt(
-                                                ShoppingCart.indexWhere((el) =>
-                                                    el.id ==
-                                                    ItemsFromCart[i].id))
-                                            .count
-                                            .toString(),
-                                      ));
-                                    }
+                                endActionPane: ActionPane(
+                                  motion: const ScrollMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      onPressed: (context) async {
+                                        bool? answer = await _confirmDismiss();
+                                        if (answer == true) {
+                                          setState(() {
+                                            int itemId =
+                                                ItemsFromCart.elementAt(index)
+                                                    .id;
+                                            ShoppingCart.removeWhere(
+                                                (el) => el.id == itemId);
+                                            ItemsFromCart = ItemsList.where(
+                                                (item) => ShoppingCart.any(
+                                                    (element) =>
+                                                        element.id ==
+                                                        item.id)).toList();
+                                            _controllers = [];
+                                            for (var i = 0;
+                                                i < ItemsFromCart.length;
+                                                i++) {
+                                              _controllers
+                                                  .add(TextEditingController(
+                                                text: ShoppingCart.elementAt(
+                                                        ShoppingCart.indexWhere(
+                                                            (el) =>
+                                                                el.id ==
+                                                                ItemsFromCart[i]
+                                                                    .id))
+                                                    .count
+                                                    .toString(),
+                                              ));
+                                            }
 
-                                    widget.updateCount();
-                                  });
-                                },
-                                background: Container(
-                                  color: Colors.amber[700],
-                                  alignment: Alignment.centerRight,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: const Icon(Icons.delete,
-                                      color: Colors.white),
+                                            widget.updateCount();
+                                          });
+                                        }
+                                      },
+                                      backgroundColor:
+                                          const Color.fromRGBO(255, 160, 0, 1),
+                                      foregroundColor: Colors.white,
+                                      icon: Icons.delete,
+                                    ),
+                                  ],
                                 ),
+
 // карточка товара
                                 child: GestureDetector(
                                   onTap: () {
