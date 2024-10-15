@@ -74,5 +74,6 @@
 
 #### Конечный результат
 
-https://github.com/user-attachments/assets/78da1f48-9b99-44c0-a1d5-d6fbeb2a01eb
+https://github.com/user-attachments/assets/ec1445b5-c9f2-4a5f-af44-83919bdfbc7c
+
 
